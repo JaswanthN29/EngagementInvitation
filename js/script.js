@@ -19,7 +19,21 @@ const eventDetails = {
 
 document.addEventListener('DOMContentLoaded', () => {
   initCountdownTimer();
+  initVideoAutoplay();
 });
+
+/**
+ * Ensures background video plays automatically across mobile & desktop browsers.
+ */
+function initVideoAutoplay() {
+  const video = document.getElementById('bg-video');
+  if (video) {
+    video.muted = true;
+    video.play().catch(err => {
+      console.log('Autoplay deferred until user interaction', err);
+    });
+  }
+}
 
 /**
  * Live IST Countdown Timer (Target: 12 October 2026, 09:30:00 IST)
