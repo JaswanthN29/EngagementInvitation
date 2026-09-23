@@ -19,20 +19,40 @@ const eventDetails = {
 
 document.addEventListener('DOMContentLoaded', () => {
   initCountdownTimer();
-  initVideoAutoplay();
+  initClickToPlayVideo();
 });
 
 /**
- * Ensures background video plays automatically across mobile & desktop browsers.
+ * Click-to-Play Video Handler:
+ * Show hero image by default. On page click/tap, video plays and hero image hides smoothly.
  */
-function initVideoAutoplay() {
+function initClickToPlayVideo() {
   const video = document.getElementById('bg-video');
-  if (video) {
-    video.muted = true;
-    video.play().catch(err => {
-      console.log('Autoplay deferred until user interaction', err);
-    });
+  const bgImage = document.getElementById('bg-image');
+  const playPrompt = document.getElementById('play-prompt');
+
+  if (!video || !bgImage) return;
+
+  let isPlaying = false;
+
+  function startVideo(e) {
+    // Ignore click if clicking directly on countdown box
+    if (e && e.target && e.target.closest('#countdown-box')) return;
+
+    if (!isPlaying) {
+      video.muted = true;
+      video.play().then(() => {
+        isPlaying = true;
+        video.classList.add('playing');
+        bgImage.classList.add('hidden');
+        if (playPrompt) playPrompt.classList.add('hidden');
+      }).catch(err => {
+        console.log('Video play failed:', err);
+      });
+    }
   }
+
+  document.addEventListener('click', startVideo);
 }
 
 /**
@@ -50,7 +70,8 @@ function initCountdownTimer() {
 
   // Click on counter box makes it fade out and disappear completely
   if (countdownBox) {
-    countdownBox.addEventListener('click', () => {
+    countdownBox.addEventListener('click', (e) => {
+      e.stopPropagation();
       countdownBox.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
       countdownBox.style.opacity = '0';
       countdownBox.style.transform = 'scale(0.95)';
