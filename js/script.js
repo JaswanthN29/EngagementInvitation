@@ -29,7 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
 function initClickToPlayVideo() {
   const video = document.getElementById('bg-video');
   const bgImage = document.getElementById('bg-image');
-  const playPrompt = document.getElementById('play-prompt');
 
   if (!video || !bgImage) return;
 
@@ -45,7 +44,6 @@ function initClickToPlayVideo() {
         isPlaying = true;
         video.classList.add('playing');
         bgImage.classList.add('hidden');
-        if (playPrompt) playPrompt.classList.add('hidden');
       }).catch(err => {
         console.log('Video play failed:', err);
       });
