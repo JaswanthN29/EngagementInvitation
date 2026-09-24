@@ -211,67 +211,6 @@ html, body {
   margin-top: 0.1rem;
 }
 
-/* Countdown Bar */
-.countdown-bar {
-  width: 100%;
-  background: rgba(0, 0, 0, 0.45);
-  border: 1px solid rgba(212, 175, 55, 0.4);
-  border-radius: 12px;
-  padding: 0.55rem 0.75rem;
-  cursor: pointer;
-  user-select: none;
-  transition: transform 0.2s ease, border-color 0.2s ease, opacity 0.3s ease;
-}
-
-.countdown-bar:hover {
-  border-color: #D4AF37;
-  transform: scale(1.01);
-}
-
-.countdown-title {
-  font-size: 0.6rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: #D4AF37;
-  display: block;
-  margin-bottom: 0.2rem;
-  font-weight: 600;
-}
-
-.countdown-digits {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-}
-
-.digit-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.digit-box .num {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 1.35rem;
-  font-weight: 700;
-  color: #D4AF37;
-  line-height: 1;
-}
-
-.digit-box .lbl {
-  font-size: 0.55rem;
-  letter-spacing: 0.15em;
-  color: rgba(255, 255, 255, 0.75);
-}
-
-.sep {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 1.2rem;
-  color: #D4AF37;
-  margin-bottom: 0.5rem;
-}
-
 /* Footer Emblem */
 .footer-emblem {
   font-size: 0.58rem;
@@ -298,8 +237,5 @@ html, body {
   }
   .info-item .val {
     font-size: 0.9rem;
-  }
-  .digit-box .num {
-    font-size: 1.15rem;
   }
 }
