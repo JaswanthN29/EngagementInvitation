@@ -23,8 +23,44 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
+ * Smooth Audio Volume Fade-In Helper:
+ * Starts audio at low volume (0.05) and smoothly fades up to targetVolume over durationMs.
+ */
+function fadeInAudio(audio, musicBtn, targetVolume = 0.6, durationMs = 3000) {
+  if (!audio) return;
+  
+  audio.volume = 0.05; // Start at low volume
+  audio.play().then(() => {
+    if (musicBtn) {
+      musicBtn.classList.add('playing');
+      musicBtn.classList.remove('muted');
+    }
+
+    const stepMs = 50;
+    const totalSteps = durationMs / stepMs;
+    const volumeIncrement = (targetVolume - 0.05) / totalSteps;
+
+    const fadeTimer = setInterval(() => {
+      if (audio.paused) {
+        clearInterval(fadeTimer);
+        return;
+      }
+
+      if (audio.volume + volumeIncrement < targetVolume) {
+        audio.volume += volumeIncrement;
+      } else {
+        audio.volume = targetVolume;
+        clearInterval(fadeTimer);
+      }
+    }, stepMs);
+  }).catch(err => {
+    console.log('Audio playback blocked or deferred:', err);
+  });
+}
+
+/**
  * Click-to-Play Video & Audio Handler:
- * Show hero image by default. On page click/tap, video plays, background music (Song.mp3) plays, and hero image hides smoothly.
+ * Show hero image by default. On page click/tap, video plays, background music (Song.mp3) fades in smoothly from low volume, and hero image hides.
  */
 function initClickToPlayMedia() {
   const video = document.getElementById('bg-video');
@@ -51,13 +87,9 @@ function initClickToPlayMedia() {
         console.log('Video play failed:', err);
       });
 
-      // Play Audio Song.mp3
+      // Play Audio with smooth low-volume fade in
       if (audio) {
-        audio.play().then(() => {
-          if (musicBtn) musicBtn.classList.add('playing');
-        }).catch(err => {
-          console.log('Audio autoplay blocked by browser:', err);
-        });
+        fadeInAudio(audio, musicBtn, 0.6, 3000);
       }
     }
   }
@@ -77,10 +109,7 @@ function initMusicToggle() {
   musicBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     if (audio.paused) {
-      audio.play().then(() => {
-        musicBtn.classList.add('playing');
-        musicBtn.classList.remove('muted');
-      }).catch(err => console.log('Audio play failed:', err));
+      fadeInAudio(audio, musicBtn, 0.6, 2000);
     } else {
       audio.pause();
       musicBtn.classList.remove('playing');
