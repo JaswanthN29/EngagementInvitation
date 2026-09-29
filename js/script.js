@@ -18,7 +18,7 @@ const eventDetails = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  initClickToPlayMedia();
+  initClickToPlayAudio();
   initMusicToggle();
 });
 
@@ -59,42 +59,27 @@ function fadeInAudio(audio, musicBtn, targetVolume = 0.6, durationMs = 3000) {
 }
 
 /**
- * Click-to-Play Video & Audio Handler:
- * Show hero image by default. On page click/tap, video plays, background music (Song.mp3) fades in smoothly from low volume, and hero image hides.
+ * Click-to-Play Audio Handler:
+ * On user page click/tap, background music (Song.mp3) fades in smoothly from low volume.
  */
-function initClickToPlayMedia() {
-  const video = document.getElementById('bg-video');
-  const bgImage = document.getElementById('bg-image');
+function initClickToPlayAudio() {
   const audio = document.getElementById('bg-music');
   const musicBtn = document.getElementById('music-toggle');
 
-  if (!video || !bgImage) return;
+  if (!audio) return;
 
-  let isPlaying = false;
+  let isStarted = false;
 
-  function startMedia(e) {
-    // If clicking directly on the music toggle button, let initMusicToggle handle it
+  function startAudio(e) {
     if (e && e.target && e.target.closest('#music-toggle')) return;
 
-    if (!isPlaying) {
-      // Play Video
-      video.muted = true;
-      video.play().then(() => {
-        isPlaying = true;
-        video.classList.add('playing');
-        bgImage.classList.add('hidden');
-      }).catch(err => {
-        console.log('Video play failed:', err);
-      });
-
-      // Play Audio with smooth low-volume fade in
-      if (audio) {
-        fadeInAudio(audio, musicBtn, 0.6, 3000);
-      }
+    if (!isStarted) {
+      isStarted = true;
+      fadeInAudio(audio, musicBtn, 0.6, 3000);
     }
   }
 
-  document.addEventListener('click', startMedia);
+  document.addEventListener('click', startAudio);
 }
 
 /**
