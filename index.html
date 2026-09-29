@@ -34,17 +34,23 @@
 <body class="fullscreen-page">
 
   <!-- Background Music Audio -->
-  <audio id="bg-music" src="images/Song.mp3" loop preload="auto"></audio>
+  <audio id="bg-music" src="images/Song.mp3" loop preload="auto" autoplay></audio>
 
   <!-- Floating Music Toggle Control -->
   <button id="music-toggle" class="music-toggle-btn" aria-label="Toggle Audio" title="Mute/Unmute Music">
     <span class="music-icon">🎵</span>
   </button>
 
-  <!-- Fullscreen Background Photo -->
+  <!-- Fullscreen Background Photo & Video -->
   <div class="fullscreen-bg">
     <img src="images/image.png" alt="Jaswanth & Lalitha Engagement Photo" id="bg-image">
-    <div class="bg-gradient-overlay"></div>
+
+    <!-- Engagement Video (Plays after 7 seconds) -->
+    <video muted playsinline id="bg-video" preload="auto">
+      <source src="images/engagmentvideo.MP4" type="video/mp4">
+    </video>
+
+    <div class="bg-gradient-overlay" id="bg-overlay"></div>
   </div>
 
   <!-- Main Content Overlay -->

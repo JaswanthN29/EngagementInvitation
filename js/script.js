@@ -18,9 +18,47 @@ const eventDetails = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  initClickToPlayAudio();
+  initAutoPlayAudio();
   initMusicToggle();
+  initVideoSequence();
 });
+
+/**
+ * 7-Second Video Transition Sequence:
+ * 1. Initial page displays original text & hero image for 7 seconds.
+ * 2. At 7s mark, all text fades away smoothly and background video starts playing with music.
+ * 3. Once video ends, text returns with smooth animation displaying original content.
+ */
+function initVideoSequence() {
+  const contentOverlay = document.querySelector('.fullscreen-content');
+  const video = document.getElementById('bg-video');
+  const overlay = document.getElementById('bg-overlay');
+
+  if (!contentOverlay || !video) return;
+
+  // At 7 seconds (7000ms), fade text away and play video
+  setTimeout(() => {
+    contentOverlay.classList.add('fade-out');
+    if (overlay) overlay.classList.add('hidden-overlay');
+
+    video.muted = true;
+    video.currentTime = 0;
+    video.play().then(() => {
+      video.classList.add('playing');
+    }).catch(err => {
+      console.log('Video play deferred or blocked:', err);
+    });
+  }, 7000);
+
+  // When video completes, bring original text content back with animation
+  video.addEventListener('ended', () => {
+    video.classList.remove('playing');
+    if (overlay) overlay.classList.remove('hidden-overlay');
+
+    contentOverlay.classList.remove('fade-out');
+    contentOverlay.classList.add('fade-in-return');
+  });
+}
 
 /**
  * Smooth Audio Volume Fade-In Helper:
@@ -30,39 +68,43 @@ function fadeInAudio(audio, musicBtn, targetVolume = 0.6, durationMs = 3000) {
   if (!audio) return;
   
   audio.volume = 0.05; // Start at low volume
-  audio.play().then(() => {
-    if (musicBtn) {
-      musicBtn.classList.add('playing');
-      musicBtn.classList.remove('muted');
-    }
+  const playPromise = audio.play();
 
-    const stepMs = 50;
-    const totalSteps = durationMs / stepMs;
-    const volumeIncrement = (targetVolume - 0.05) / totalSteps;
-
-    const fadeTimer = setInterval(() => {
-      if (audio.paused) {
-        clearInterval(fadeTimer);
-        return;
+  if (playPromise !== undefined) {
+    playPromise.then(() => {
+      if (musicBtn) {
+        musicBtn.classList.add('playing');
+        musicBtn.classList.remove('muted');
       }
 
-      if (audio.volume + volumeIncrement < targetVolume) {
-        audio.volume += volumeIncrement;
-      } else {
-        audio.volume = targetVolume;
-        clearInterval(fadeTimer);
-      }
-    }, stepMs);
-  }).catch(err => {
-    console.log('Audio playback blocked or deferred:', err);
-  });
+      const stepMs = 50;
+      const totalSteps = durationMs / stepMs;
+      const volumeIncrement = (targetVolume - 0.05) / totalSteps;
+
+      const fadeTimer = setInterval(() => {
+        if (audio.paused) {
+          clearInterval(fadeTimer);
+          return;
+        }
+
+        if (audio.volume + volumeIncrement < targetVolume) {
+          audio.volume += volumeIncrement;
+        } else {
+          audio.volume = targetVolume;
+          clearInterval(fadeTimer);
+        }
+      }, stepMs);
+    }).catch(err => {
+      console.log('Autoplay blocked by browser policy:', err);
+    });
+  }
 }
 
 /**
- * Click-to-Play Audio Handler:
- * On user page click/tap, background music (Song.mp3) fades in smoothly from low volume.
+ * Default Auto-Play Audio Handler:
+ * Attempts autoplay immediately on page load, with fallback listener on first user interaction.
  */
-function initClickToPlayAudio() {
+function initAutoPlayAudio() {
   const audio = document.getElementById('bg-music');
   const musicBtn = document.getElementById('music-toggle');
 
@@ -70,16 +112,26 @@ function initClickToPlayAudio() {
 
   let isStarted = false;
 
-  function startAudio(e) {
-    if (e && e.target && e.target.closest('#music-toggle')) return;
-
-    if (!isStarted) {
-      isStarted = true;
-      fadeInAudio(audio, musicBtn, 0.6, 3000);
-    }
+  function attemptPlay() {
+    if (isStarted) return;
+    isStarted = true;
+    fadeInAudio(audio, musicBtn, 0.6, 3000);
+    removeInteractionListeners();
   }
 
-  document.addEventListener('click', startAudio);
+  function removeInteractionListeners() {
+    ['click', 'touchstart', 'pointerdown', 'scroll'].forEach(evt => {
+      document.removeEventListener(evt, attemptPlay);
+    });
+  }
+
+  // 1. Attempt autoplay immediately on page load
+  attemptPlay();
+
+  // 2. Fallback: trigger on first user interaction if autoplay was restricted by browser
+  ['click', 'touchstart', 'pointerdown', 'scroll'].forEach(evt => {
+    document.addEventListener(evt, attemptPlay, { passive: true, once: true });
+  });
 }
 
 /**
