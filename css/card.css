@@ -1,0 +1,385 @@
+/* ==========================================================================
+   Jaswanth & Lalitha Engagement Invitation Card
+   Theme: Traditional Warm Gold, Peach & Royal Maroon
+   Single-Screen Viewport Fit (No Vertical Scroll)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Great+Vibes&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap');
+
+:root {
+  --bg-start: #fff9f2;
+  --bg-mid: #fdedd9;
+  --bg-end: #f8dbbe;
+
+  --maroon: #7b1113;
+  --maroon-dark: #580a0c;
+  --maroon-light: #9a1a1c;
+  
+  --gold: #c9923b;
+  --gold-light: #f5d697;
+  --gold-dark: #966720;
+  
+  --text-dark: #3a1516;
+  --text-sub: #5c3537;
+
+  --font-heading: 'Cinzel', serif;
+  --font-script: 'Great Vibes', cursive;
+  --font-body: 'Lora', serif;
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+  overflow: hidden; /* Prevent page scrollbar */
+}
+
+body {
+  font-family: var(--font-body);
+  background: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-mid) 50%, var(--bg-end) 100%);
+  color: var(--text-dark);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: clamp(8px, 2vh, 16px) clamp(8px, 2vw, 16px);
+  position: relative;
+}
+
+/* Background Texture */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(var(--gold) 0.65px, transparent 0.65px);
+  background-size: 22px 22px;
+  opacity: 0.14;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Outer Card Container - Auto-fits Viewport Height */
+.invitation-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 900px;
+  max-height: calc(100dvh - 20px);
+  background: #fffdf9;
+  border-radius: clamp(12px, 2vh, 20px);
+  box-shadow: 0 15px 45px rgba(123, 17, 19, 0.12), 0 4px 15px rgba(0, 0, 0, 0.04);
+  border: 1.5px solid rgba(201, 146, 59, 0.35);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Top Mango Leaf Toran Banner */
+.toran-banner {
+  width: 100%;
+  line-height: 0;
+  background: transparent;
+  flex-shrink: 0;
+}
+
+.toran-svg {
+  width: 100%;
+  height: auto;
+  max-height: clamp(35px, 6vh, 70px);
+}
+
+/* Card Content Grid */
+.card-content {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  padding: clamp(10px, 2vh, 20px) clamp(16px, 3vw, 28px);
+  gap: clamp(12px, 2vw, 24px);
+  align-items: center;
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+
+/* Image Frame Container */
+.image-column {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.photo-frame {
+  position: relative;
+  width: 100%;
+  max-width: clamp(180px, 38vh, 320px);
+  max-height: 52vh;
+  border-radius: 140px 140px 16px 16px;
+  padding: clamp(4px, 0.8vh, 7px);
+  background: linear-gradient(145deg, var(--gold-light), var(--gold-dark));
+  box-shadow: 0 8px 24px rgba(123, 17, 19, 0.14);
+}
+
+.photo-frame::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 136px 136px 14px 14px;
+  border: 1.2px stroke rgba(255, 255, 255, 0.8);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.couple-photo {
+  width: 100%;
+  height: 100%;
+  max-height: calc(52vh - 12px);
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  object-position: center top;
+  border-radius: 132px 132px 12px 12px;
+  display: block;
+}
+
+/* Details Column */
+.details-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+}
+
+.badge-tag {
+  font-family: var(--font-heading);
+  font-size: clamp(0.7rem, 1.2vh, 0.82rem);
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  color: var(--maroon);
+  text-transform: uppercase;
+  margin-bottom: clamp(2px, 0.5vh, 6px);
+  opacity: 0.9;
+}
+
+.main-title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.4rem, 3.2vh, 2rem);
+  font-weight: 700;
+  color: var(--maroon);
+  letter-spacing: 0.5px;
+  margin-bottom: clamp(4px, 1vh, 10px);
+  position: relative;
+  padding-bottom: clamp(2px, 0.5vh, 6px);
+}
+
+.main-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 1.8px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.invitation-message {
+  font-size: clamp(0.85rem, 1.6vh, 0.98rem);
+  color: var(--text-sub);
+  line-height: 1.4;
+  max-width: 400px;
+  margin-bottom: clamp(6px, 1vh, 12px);
+}
+
+/* Names Display */
+.couple-names {
+  margin: clamp(2px, 0.5vh, 6px) 0 clamp(6px, 1.2vh, 14px) 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.name {
+  font-family: var(--font-script);
+  font-size: clamp(2.4rem, 5.2vh, 3.4rem);
+  color: var(--maroon);
+  line-height: 1;
+  text-shadow: 1px 1px 2px rgba(123, 17, 19, 0.08);
+}
+
+.ampersand {
+  font-family: var(--font-script);
+  font-size: clamp(1.8rem, 3.6vh, 2.3rem);
+  color: var(--maroon);
+  margin: -4px 0;
+}
+
+/* Date & Time */
+.date-time-box {
+  margin-bottom: clamp(6px, 1vh, 12px);
+}
+
+.event-date {
+  font-family: var(--font-heading);
+  font-size: clamp(0.92rem, 1.8vh, 1.08rem);
+  font-weight: 700;
+  color: var(--maroon);
+  margin-bottom: 2px;
+}
+
+.event-time {
+  font-size: clamp(0.85rem, 1.6vh, 0.95rem);
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+/* Venue Section */
+.venue-box {
+  margin-bottom: clamp(6px, 1vh, 12px);
+  max-width: 380px;
+}
+
+.venue-label {
+  font-family: var(--font-heading);
+  font-size: clamp(0.8rem, 1.4vh, 0.92rem);
+  font-weight: 700;
+  color: var(--maroon);
+  margin-bottom: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.venue-title {
+  font-size: clamp(0.92rem, 1.8vh, 1.05rem);
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 2px;
+}
+
+.venue-address {
+  font-size: clamp(0.78rem, 1.4vh, 0.88rem);
+  color: var(--text-sub);
+  line-height: 1.35;
+}
+
+/* Lunch Pill */
+.lunch-pill {
+  font-family: var(--font-heading);
+  font-size: clamp(0.8rem, 1.5vh, 0.92rem);
+  font-weight: 700;
+  color: var(--maroon);
+  background: rgba(238, 200, 125, 0.25);
+  padding: clamp(3px, 0.6vh, 5px) clamp(10px, 2vw, 16px);
+  border-radius: 16px;
+  border: 1px solid rgba(201, 146, 59, 0.35);
+  display: inline-block;
+  margin-bottom: clamp(6px, 1vh, 12px);
+}
+
+/* Host Section */
+.host-box {
+  border-top: 1px dashed rgba(201, 146, 59, 0.35);
+  padding-top: clamp(4px, 0.8vh, 8px);
+  width: 100%;
+  max-width: 360px;
+}
+
+.host-label {
+  font-family: var(--font-heading);
+  font-size: clamp(0.78rem, 1.4vh, 0.88rem);
+  font-weight: 600;
+  color: var(--maroon);
+  margin-bottom: 2px;
+}
+
+.host-names {
+  font-size: clamp(0.85rem, 1.5vh, 0.95rem);
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+/* Floor Rangoli Footer Banner */
+.rangoli-banner {
+  width: 100%;
+  line-height: 0;
+  background: transparent;
+  flex-shrink: 0;
+}
+
+.rangoli-svg {
+  width: 100%;
+  height: auto;
+  max-height: clamp(30px, 5vh, 55px);
+  opacity: 0.75;
+}
+
+/* ==========================================================================
+   Mobile Layout Adjustments (Fits Entire Card on Single Screen)
+   ========================================================================== */
+@media (max-width: 640px) {
+  body {
+    padding: 6px;
+  }
+
+  .invitation-card {
+    border-radius: 14px;
+    max-height: calc(100dvh - 12px);
+  }
+
+  .card-content {
+    grid-template-columns: 1fr;
+    padding: clamp(6px, 1.2vh, 12px) clamp(10px, 3vw, 16px);
+    gap: clamp(6px, 1.2vh, 12px);
+    justify-content: center;
+  }
+
+  .photo-frame {
+    max-width: clamp(140px, 24vh, 220px);
+    max-height: 26vh;
+    border-radius: 100px 100px 12px 12px;
+  }
+
+  .couple-photo {
+    max-height: calc(26vh - 8px);
+    border-radius: 96px 96px 10px 10px;
+  }
+
+  .main-title {
+    font-size: clamp(1.2rem, 2.6vh, 1.6rem);
+    margin-bottom: clamp(2px, 0.4vh, 4px);
+  }
+
+  .invitation-message {
+    font-size: clamp(0.78rem, 1.4vh, 0.88rem);
+    margin-bottom: clamp(4px, 0.8vh, 6px);
+  }
+
+  .name {
+    font-size: clamp(2.1rem, 4.2vh, 2.7rem);
+  }
+
+  .ampersand {
+    font-size: clamp(1.5rem, 3vh, 1.9rem);
+  }
+
+  .event-date {
+    font-size: clamp(0.85rem, 1.6vh, 0.95rem);
+  }
+
+  .venue-title {
+    font-size: clamp(0.85rem, 1.6vh, 0.95rem);
+  }
+
+  .venue-address {
+    font-size: clamp(0.72rem, 1.3vh, 0.82rem);
+  }
+}
