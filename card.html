@@ -142,5 +142,96 @@
 
   </main>
 
+  <!-- Floating Share Image Card Button -->
+  <button id="share-image-btn" class="share-floating-btn" onclick="shareCardAsImage()" aria-label="Share Image Screenshot">
+    <span>📸</span> Save / Share Card Image
+  </button>
+
+  <!-- HTML2Canvas Library -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+  <script>
+    async function shareCardAsImage() {
+      const shareBtn = document.getElementById('share-image-btn');
+      const originalHtml = shareBtn.innerHTML;
+      shareBtn.innerHTML = '<span>⏳</span> Generating Image...';
+      shareBtn.disabled = true;
+
+      try {
+        const cardElement = document.querySelector('.invitation-card');
+
+        // Capture high-res screenshot
+        const canvas = await html2canvas(cardElement, {
+          scale: 2, // High resolution crisp output
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: '#FFFDF9',
+          logging: false
+        });
+
+        shareBtn.innerHTML = originalHtml;
+        shareBtn.disabled = false;
+
+        canvas.toBlob(async (blob) => {
+          if (!blob) {
+            alert('Could not generate image. Please try again.');
+            return;
+          }
+
+          const file = new File([blob], 'Jaswanth_Lalitha_Engagement_Invitation.png', { type: 'image/png' });
+
+          // Mobile Web Share API (WhatsApp / Instagram / Photos share sheet)
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+              await navigator.share({
+                title: 'Engagement Invitation — Jaswanth & Lalitha',
+                text: 'With joyful hearts, you are cordially invited to celebrate the engagement of Jaswanth & Lalitha!',
+                files: [file]
+              });
+            } catch (err) {
+              if (err.name !== 'AbortError') {
+                downloadFallback(blob);
+              }
+            }
+          } else {
+            // Desktop or Unsupported Browsers Fallback: Automatic Download
+            downloadFallback(blob);
+          }
+        }, 'image/png', 1.0);
+
+      } catch (error) {
+        console.error('Error generating card image:', error);
+        shareBtn.innerHTML = originalHtml;
+        shareBtn.disabled = false;
+        alert('Failed to generate card image. Please try again.');
+      }
+    }
+
+    function downloadFallback(blob) {
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'Jaswanth_Lalitha_Engagement_Invitation.png';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(link.href);
+
+      showToast('📸 Card image saved to your device!');
+    }
+
+    function showToast(message) {
+      let toast = document.getElementById('card-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'card-toast';
+        toast.className = 'card-toast';
+        document.body.appendChild(toast);
+      }
+      toast.innerText = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+  </script>
+
 </body>
 </html>
