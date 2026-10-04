@@ -18,18 +18,66 @@ const eventDetails = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+  initWelcomeOverlay();
   initAutoPlayAudio();
   initMusicToggle();
-  initVideoSequence();
 });
 
 /**
+ * Welcome Cover Screen / Tap to Open Invitation Handler:
+ * Clicking "Open Invitation" or tapping anywhere on the welcome overlay
+ * immediately starts music playback within a direct user gesture context,
+ * smoothly hides the welcome screen, and triggers the main video timer sequence.
+ */
+function initWelcomeOverlay() {
+  const welcomeOverlay = document.getElementById('welcome-overlay');
+  const openBtn = document.getElementById('open-invitation-btn');
+  const audio = document.getElementById('bg-music');
+  const musicBtn = document.getElementById('music-toggle');
+
+  if (!welcomeOverlay) {
+    startVideoSequence();
+    return;
+  }
+
+  function handleOpen() {
+    // 1. Instantly start audio playback within direct user interaction
+    if (audio && audio.paused) {
+      fadeInAudio(audio, musicBtn, 0.6, 3000).catch(() => {});
+    }
+
+    // 2. Hide welcome overlay smoothly
+    welcomeOverlay.classList.add('hidden-welcome');
+
+    // 3. Trigger 7-second background video transition
+    startVideoSequence();
+  }
+
+  if (openBtn) {
+    openBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      handleOpen();
+    });
+  }
+
+  welcomeOverlay.addEventListener('click', () => {
+    handleOpen();
+  });
+}
+
+let videoSequenceStarted = false;
+
+/**
  * 7-Second Video Transition Sequence:
+ * Starts after the invitation is opened:
  * 1. Initial page displays original text & hero image for 7 seconds.
  * 2. At 7s mark, all text fades away smoothly and background video starts playing with music.
  * 3. Once video ends, text returns with smooth animation displaying original content.
  */
-function initVideoSequence() {
+function startVideoSequence() {
+  if (videoSequenceStarted) return;
+  videoSequenceStarted = true;
+
   const contentOverlay = document.querySelector('.fullscreen-content');
   const video = document.getElementById('bg-video');
   const overlay = document.getElementById('bg-overlay');
@@ -65,13 +113,13 @@ function initVideoSequence() {
  * Starts audio at low volume (0.05) and smoothly fades up to targetVolume over durationMs.
  */
 function fadeInAudio(audio, musicBtn, targetVolume = 0.6, durationMs = 3000) {
-  if (!audio) return;
+  if (!audio) return Promise.reject("No audio element");
   
   audio.volume = 0.05; // Start at low volume
   const playPromise = audio.play();
 
   if (playPromise !== undefined) {
-    playPromise.then(() => {
+    return playPromise.then(() => {
       if (musicBtn) {
         musicBtn.classList.add('playing');
         musicBtn.classList.remove('muted');
@@ -95,14 +143,17 @@ function fadeInAudio(audio, musicBtn, targetVolume = 0.6, durationMs = 3000) {
         }
       }, stepMs);
     }).catch(err => {
-      console.log('Autoplay blocked by browser policy:', err);
+      console.log('Autoplay deferred/blocked by browser policy:', err);
+      throw err;
     });
   }
+  return Promise.resolve();
 }
 
 /**
  * Default Auto-Play Audio Handler:
- * Attempts autoplay immediately on page load, with fallback listener on first user interaction.
+ * Attempts autoplay immediately on page load, and keeps interaction listeners active
+ * until playback successfully starts on any user gesture anywhere on the page.
  */
 function initAutoPlayAudio() {
   const audio = document.getElementById('bg-music');
@@ -112,25 +163,43 @@ function initAutoPlayAudio() {
 
   let isStarted = false;
 
-  function attemptPlay() {
-    if (isStarted) return;
-    isStarted = true;
-    fadeInAudio(audio, musicBtn, 0.6, 3000);
-    removeInteractionListeners();
+  function tryPlay() {
+    if (isStarted || !audio.paused) {
+      isStarted = true;
+      removeInteractionListeners();
+      return;
+    }
+
+    fadeInAudio(audio, musicBtn, 0.6, 3000)
+      .then(() => {
+        isStarted = true;
+        removeInteractionListeners();
+      })
+      .catch(() => {
+        // Autoplay blocked by browser policy on this attempt.
+        // Listeners remain active so the very first tap/click/scroll anywhere will start playback.
+      });
   }
 
   function removeInteractionListeners() {
-    ['click', 'touchstart', 'pointerdown', 'scroll'].forEach(evt => {
-      document.removeEventListener(evt, attemptPlay);
+    const events = ['click', 'touchstart', 'pointerdown', 'scroll', 'keydown'];
+    events.forEach(evt => {
+      document.removeEventListener(evt, tryPlay);
+      window.removeEventListener(evt, tryPlay);
     });
   }
 
-  // 1. Attempt autoplay immediately on page load
-  attemptPlay();
+  // 1. Attempt autoplay immediately on script execution
+  tryPlay();
 
-  // 2. Fallback: trigger on first user interaction if autoplay was restricted by browser
-  ['click', 'touchstart', 'pointerdown', 'scroll'].forEach(evt => {
-    document.addEventListener(evt, attemptPlay, { passive: true, once: true });
+  // 2. Attempt again on full window load
+  window.addEventListener('load', tryPlay, { once: true });
+
+  // 3. Fallback: trigger playback on any user interaction anywhere on the document or window
+  const events = ['click', 'touchstart', 'pointerdown', 'scroll', 'keydown'];
+  events.forEach(evt => {
+    document.addEventListener(evt, tryPlay, { passive: true });
+    window.addEventListener(evt, tryPlay, { passive: true });
   });
 }
 
@@ -146,7 +215,7 @@ function initMusicToggle() {
   musicBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     if (audio.paused) {
-      fadeInAudio(audio, musicBtn, 0.6, 2000);
+      fadeInAudio(audio, musicBtn, 0.6, 2000).catch(() => {});
     } else {
       audio.pause();
       musicBtn.classList.remove('playing');

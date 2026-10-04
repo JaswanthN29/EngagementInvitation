@@ -296,3 +296,115 @@ html, body {
     font-size: 0.9rem;
   }
 }
+
+/* Welcome / Tap to Open Invitation Overlay */
+.welcome-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(10, 8, 6, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+.welcome-overlay.hidden-welcome {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.welcome-card {
+  text-align: center;
+  max-width: 420px;
+  width: 100%;
+  background: rgba(25, 18, 14, 0.88);
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  border-radius: 24px;
+  padding: 2.5rem 1.75rem;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(212, 175, 55, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  animation: welcomePop 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes welcomePop {
+  0% { transform: scale(0.9); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.welcome-badge {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: #D4AF37;
+  font-weight: 600;
+}
+
+.welcome-ring {
+  font-size: 2.8rem;
+  margin: 0.2rem 0;
+  animation: ringFloat 3s infinite ease-in-out;
+}
+
+@keyframes ringFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.welcome-names {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 2.4rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  line-height: 1.1;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+.welcome-names .ampersand {
+  font-style: italic;
+  color: #D4AF37;
+  font-weight: 400;
+}
+
+.welcome-event {
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+}
+
+.open-invitation-btn {
+  margin-top: 0.5rem;
+  background: linear-gradient(135deg, #D4AF37 0%, #AA7C11 100%);
+  color: #0A0806;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  padding: 0.9rem 2rem;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.open-invitation-btn:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 12px 30px rgba(212, 175, 55, 0.6);
+  filter: brightness(1.1);
+}
+
+.open-invitation-btn:active {
+  transform: translateY(0) scale(0.98);
+}
